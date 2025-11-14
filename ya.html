@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>图片+文字混合弹幕（GitHub版）</title>
+    <title>图片+文字混合弹幕（最终版）</title>
     <style>
         .danmu-container {
             position: fixed;
@@ -17,7 +17,7 @@
         /* 图片弹幕样式（可按需调整尺寸） */
         .image-danmu {
             position: absolute;
-            height: 400px; /* 调整为合适尺寸，避免过大 */
+            height: 100px; /* 调整为合适尺寸，避免过大 */
             width: auto;
             animation: danmuScroll linear infinite;
             opacity: 0.9;
@@ -45,10 +45,10 @@
     <div class="danmu-container" id="danmuContainer"></div>
 
     <script>
-        // 关键修改：图片路径改为GitHub仓库的相对路径
+        // 关键修改：图片路径改为GitHub Raw绝对链接
         const config = {
             image: {
-                url: "images/wx.jpg", // 与仓库结构一致：根目录/images/wx.jpg
+                url: "https://raw.githubusercontent.com/woshixiongyayuan/woshixiongyayuan.github.io/main/images/wx.jpg",
                 speed: 8,
                 interval: 3000,
                 maxCount: 5,

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>循环重复显现弹幕（全屏密集）</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            background-color: #fff5f7;
+            position: relative;
+        }
+        .message {
+            position: absolute;
+            padding: 6px 14px;
+            border-radius: 18px;
+            font-size: 12px;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            opacity: 0;
+            transform: scale(0.7);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 1;
+        }
+        .message.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .message::before {
+            content: "🤩 ";
+            color: #ff1493;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const messages = [
+            "鲍佳郁不想军训", "不想上早八", "不要上政治课做小组作业",
+            "不想体测", "想回灌南","想吃鱼香肉丝包不要预制的",
+            "鲍佳郁不想军训", "想吃鱼香肉丝包不要预制的", "不要上政治课做小组作业"
+        ];
+
+        const colors = [
+            "#ffb6c1", "#ffd1dc", "#fce4ec", "#e8f5e9", "#c8e6c9",
+            "#a5d6a7", "#81c784", "#66bb6a", "#ffcccc", "#ccffcc"
+        ];
+
+        // 随机位置生成
+        function getRandomPosition() {
+            const top = Math.random() * 95 + 'vh';
+            const left = Math.random() * 95 + 'vw';
+            return { top, left };
+        }
+
+        // 创建单个弹幕（重复使用固定提示语）
+        function createSingleMessage() {
+            const randomText = messages[Math.floor(Math.random() * messages.length)];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            const message = document.createElement('div');
+            message.className = 'message';
+            message.textContent = randomText;
+            message.style.backgroundColor = randomColor;
+            const { top, left } = getRandomPosition();
+            message.style.top = top;
+            message.style.left = left;
+            
+            document.body.appendChild(message);
+            
+            // 淡入显示
+            setTimeout(() => {
+                message.classList.add('show');
+            }, 50);
+            
+            // 3秒后淡出并移除（避免页面卡顿）
+            setTimeout(() => {
+                message.style.opacity = 0;
+                setTimeout(() => {
+                    message.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // 循环生成：初始快速铺满，之后持续补充
+        function loopShowMessages() {
+            // 第一步：1秒内快速铺满50条（初始密集）
+            for (let i = 0; i < 50; i++) {
+                setTimeout(createSingleMessage, i * 20);
+            }
+
+            // 第二步：之后每30毫秒生成1条，无限循环补充
+            setInterval(createSingleMessage, 30);
+        }
+
+        window.onload = loopShowMessages;
+    </script>
+</body>
+</html>

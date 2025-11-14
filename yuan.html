@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>图片+文字混合弹幕（最终版）</title>
+    <style>
+        .danmu-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #f5f5f5;
+            z-index: 999;
+        }
+        /* 图片弹幕样式（可按需调整尺寸） */
+        .image-danmu {
+            position: absolute;
+            height: 500px; /* 调整为合适尺寸，避免过大 */
+            width: auto;
+            animation: danmuScroll linear infinite;
+            opacity: 0.9;
+        }
+        /* 文字弹幕样式 */
+        .text-danmu {
+            position: absolute;
+            height: auto;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            font-size: 16px;
+            white-space: nowrap;
+            animation: danmuScroll linear infinite;
+        }
+        /* 滚动动画 */
+        @keyframes danmuScroll {
+            from { transform: translateX(100vw); }
+            to { transform: translateX(-100%); }
+        }
+    </style>
+</head>
+<body>
+    <div class="danmu-container" id="danmuContainer"></div>
+
+    <script>
+        // 关键修改：图片路径改为GitHub Raw绝对链接
+        const config = {
+            image: {
+                url: "https://raw.githubusercontent.com/woshixiongyayuan/woshixiongyayuan.github.io/main/images/wx.jpg",
+                speed: 8,
+                interval: 3000,
+                maxCount: 5,
+                topRange: [50, 90]
+            },
+            text: {
+                contentList: ["我是李雨轩", "美女加我微信", "我喜欢美女", "我李雨轩喜欢美女", "小姐姐加个wechat"],
+                colorList: ["#fff", "#ff0", "#0ff", "#f0f", "#0f0"],
+                speed: 6,
+                interval: 1500,
+                maxCount: 8,
+                topRange: [10, 40],
+                fontSizeRange: [14, 20]
+            }
+        };
+
+        const container = document.getElementById("danmuContainer");
+        let imageDanmuCount = 0;
+        let textDanmuCount = 0;
+
+        function createImageDanmu() {
+            if (imageDanmuCount >= config.image.maxCount) return;
+            const danmu = document.createElement("img");
+            danmu.src = config.image.url;
+            danmu.className = "image-danmu";
+            danmu.style.top = `${Math.random() * (config.image.topRange[1] - config.image.topRange[0]) + config.image.topRange[0]}%`;
+            danmu.style.animationDuration = `${Math.random() * 5 + config.image.speed}s`;
+            danmu.addEventListener("animationend", () => {
+                danmu.remove();
+                imageDanmuCount--;
+            });
+            container.appendChild(danmu);
+            imageDanmuCount++;
+        }
+
+        function createTextDanmu() {
+            if (textDanmuCount >= config.text.maxCount) return;
+            const danmu = document.createElement("div");
+            danmu.className = "text-danmu";
+            const randomText = config.text.contentList[Math.floor(Math.random() * config.text.contentList.length)];
+            const randomColor = config.text.colorList[Math.floor(Math.random() * config.text.colorList.length)];
+            const randomFontSize = Math.floor(Math.random() * (config.text.fontSizeRange[1] - config.text.fontSizeRange[0]) + config.text.fontSizeRange[0]);
+            danmu.textContent = randomText;
+            danmu.style.color = randomColor;
+            danmu.style.fontSize = `${randomFontSize}px`;
+            danmu.style.top = `${Math.random() * (config.text.topRange[1] - config.text.topRange[0]) + config.text.topRange[0]}%`;
+            danmu.style.animationDuration = `${Math.random() * 5 + config.text.speed}s`;
+            danmu.addEventListener("animationend", () => {
+                danmu.remove();
+                textDanmuCount--;
+            });
+            container.appendChild(danmu);
+            textDanmuCount++;
+        }
+
+        setInterval(createImageDanmu, config.image.interval);
+        setInterval(createTextDanmu, config.text.interval);
+        createImageDanmu();
+        createTextDanmu();
+    </script>
+</body>
+</html>
